@@ -38,6 +38,7 @@ error_reporting(E_ALL);
             else{
                 $stockSuficiente = 1;
             }
+            $k++;
         }
         if($stockSuficiente == 0){
             if($cantidadMenuTotal == 0){
@@ -47,8 +48,11 @@ error_reporting(E_ALL);
                 if($_POST['hora'] > date('H:i')){
                     $k = 1;
                     while($row = $result->fetch_assoc()) {
-                        $sql = "UPDATE `menu` SET `stock`=200 WHERE `id` = 0";
+                        $menuName = 'menu' . $k;
+                        $nuevoStock = (int)$row['stock'] - (int)$_POST[$menuName];
+                        $sql = "UPDATE `menu` SET `stock` = " . $nuevoStock . " WHERE `id` = " . $_POST[$menuName];
                         $result = $conn->query($sql);
+                        $k++;
                     }
                     $sql = "INSERT INTO pedido (sucursal, total, cliente_nombre, cliente_telefono, cliente_direccion, cliente_email, envio, pedido, cantidad_menus, hora) VALUES ($sucursal, $precio, '$cliente_nombre', '$cliente_telefono', '$cliente_direccion', '$cliente_email', $envio, '$pedido', $cantidadMenuTotal, '$hora')";
                     if ($conn->query($sql) === TRUE) {
