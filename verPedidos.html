@@ -1,0 +1,86 @@
+<html>
+    <head>
+        <title>Pedidos</title>
+        <meta charset="utf-8">
+        <meta http-equiv="refresh" content="60">
+        <link rel="stylesheet" href="css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="css/datatables.min.css"/>
+        <script src="js/jquery2.2.0.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="js/datatables.min.js"></script>
+		<script type="text/javascript" charset="utf-8">
+			$(document).ready(function() {
+                $('#pedidos').DataTable( {
+                    "language": {
+                        "sProcessing":     "Procesando...",
+                        "sLengthMenu":     "Mostrar _MENU_ registros",
+                        "sZeroRecords":    "No se encontraron resultados",
+                        "sEmptyTable":     "Ningún dato disponible en esta tabla",
+                        "sInfo":           "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                        "sInfoEmpty":      "Mostrando registros del 0 al 0 de un total de 0 registros",
+                        "sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
+                        "sInfoPostFix":    "",
+                        "sSearch":         "Buscar:",
+                        "sUrl":            "",
+                        "sInfoThousands":  ",",
+                        "sLoadingRecords": "Cargando...",
+                        "oPaginate": {
+                            "sFirst":    "Primero",
+                            "sLast":     "Último",
+                            "sNext":     "Siguiente",
+                            "sPrevious": "Anterior"
+                        },
+                        "oAria": {
+                            "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
+                            "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                        }
+                    }
+                });
+            });
+		</script>
+    </head>
+    <body>
+        <div class="container" style="margin-top:20px; width: 98%;">
+            <table class="table table-striped" id="pedidos">
+                <thead>
+                    <tr>
+                        <th>Marca Temporal</th>
+                        <th>Pedido Nº</th>
+                        <th>Cliente</th>
+                        <th>Pedido</th>
+                        <th>¿Envío?</th>
+                        <th>Hora</th>
+                        <th>Sucursal</th>
+                        <th>Total</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>19/01/1990 20:30</td>
+                        <td>01</td>
+                        <td>Juan Alberto<br />Chacabuco 1990<br />0351 1534100000</td>
+                        <td>
+                            - 1 Milanesa: $50<br />
+                            - 1 Carne al Horno: $50<br />
+                            - 1 Tarta Jamón y Queso: $30<br />
+
+                        </td>
+                        <td>No</td>
+                        <td>12:00</td>
+                        <td>25 Mayo 55</td>
+                        <td>$ 250,00</td>
+                        <td><p>Esperando Confirmación...</p>
+                            <a href="#" class="btn btn-success" style="width:100%; margin-bottom:20px;">Entregado</a>
+                            <br />
+                            <a href="#" class="btn btn-primary" style="width:100%; margin-bottom:20px;">Para Entregar</a>
+                            <br />
+                            <a href="#" class="btn btn-warning" style="width:100%; margin-bottom:20px;">En preparación</a>
+                            <br />
+                            <a href="#" class="btn btn-danger" style="width:100%;">Cancelar</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </body>
+</html>
