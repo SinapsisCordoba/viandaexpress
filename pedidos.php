@@ -217,7 +217,7 @@ error_reporting(E_ALL);
             }
         }          
             else {
-                echo "0 results";
+                echo "No hay Resultados de menús para el día de hoy.";
         }
         $conn->close();
 //           <div class="row">
