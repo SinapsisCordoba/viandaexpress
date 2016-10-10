@@ -1,11 +1,8 @@
 <?php
+    include 'seguridad.php';
+?>
+<?php
     if(!empty($_POST)){
-        $servername = "localhost";
-        $username = "root";
-        $password = "Uur5ryw5.17";
-        $dbname = "viandaexpress";
-        $conn = new mysqli($servername, $username, $password, $dbname);
-        $conn->set_charset("utf8");
         $sql;
         if(isset($_POST['direccion'])){
             //foreach ($_POST as $key => $value) {
@@ -21,8 +18,7 @@
         if(isset($_POST['eliminarSucursal'])){
             $sql = "DELETE FROM `sucursales` WHERE `id`=" . $_POST['eliminarSucursal'];
         }
-        $result = $conn->query($sql);
-        $conn->close();
+        $result = connectarDB($sql);
     }
 ?>
 <html>
@@ -70,6 +66,7 @@
         <div class="container" style="margin-top:20px; width: 98%;">
             <div class="col-lg-12">
                 <div class="col-lg-6" style="margin-bottom:20px;">
+                    <a href="admin.php" class="btn btn-danger" style="height:35px;"><i class="fa fa-arrow-left"></i></a>
                     <a href="javascript:void(0)" class="btn btn-primary" onclick="verForm()"><i class="fa fa-plus"></i> Crear Nueva Sucursal</a>
                 </div>
                 <div class="col-lg-6" style="margin-bottom:20px; display:none;" id="form-sucursales">
@@ -105,14 +102,8 @@
                 </thead>
                 <tbody>
                     <?php
-                        $servername = "localhost";
-                        $username = "root";
-                        $password = "Uur5ryw5.17";
-                        $dbname = "viandaexpress";
-                        $conn = new mysqli($servername, $username, $password, $dbname);
-                        $conn->set_charset("utf8");
                         $sql = "SELECT * FROM `sucursales` WHERE 1";
-                        $result = $conn->query($sql);
+                        $result = connectarDB($sql);
                         while($row = $result->fetch_assoc()) {
                             echo "<tr>
                             <td>" . $row['id'] . "</td>

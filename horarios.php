@@ -1,11 +1,9 @@
 <?php
-$servername = "localhost";
-$username = "root";
-$password = "Uur5ryw5.17";
-$dbname = "viandaexpress";
-$conn = new mysqli($servername, $username, $password, $dbname);
+    include 'seguridad.php';
+?>
+<?php
 $sql = "SELECT * FROM `horarios` WHERE `sucursal` = " . $_GET['suc'];
-$result = $conn->query($sql);
+$result = connectarDB($sql);
 $string = "[";
 while($row = $result->fetch_assoc()) {
     if($string != "["){

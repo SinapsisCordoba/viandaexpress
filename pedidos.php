@@ -1,4 +1,7 @@
 <?php
+    include 'seguridad.php';
+?>
+<?php
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
@@ -6,12 +9,6 @@ error_reporting(E_ALL);
 <?php
     $exito = 0;
     if(!empty($_POST)){
-        $servername = "localhost";
-        $username = "root";
-        $password = "Uur5ryw5.17";
-        $dbname = "viandaexpress";
-        $conn = new mysqli($servername, $username, $password, $dbname);
-        $conn->set_charset("utf8");
         $sucursal = $_POST['sucursal'];
         $cliente_nombre = $_POST['nombre'];
         $cliente_telefono = $_POST['telefono'];
@@ -24,7 +21,7 @@ error_reporting(E_ALL);
             $envio = 1;
         }
         $sql = "SELECT * FROM menu where DATE(`fecha`)=CURDATE()";
-        $result = $conn->query($sql);
+        $result = connectarDB($sql);
         $k = 1;
         $stockSuficiente = 0;
         $cantidadMenuTotal = 0;
@@ -51,14 +48,14 @@ error_reporting(E_ALL);
                         $menuName = 'menu' . $k;
                         $nuevoStock = (int)$row['stock'] - (int)$_POST[$menuName];
                         $sql = "UPDATE `menu` SET `stock` = " . $nuevoStock . " WHERE `id` = " . $_POST[$menuName];
-                        $result = $conn->query($sql);
+                        $result = connectarDB($sql);
                         $k++;
                     }
                     $sql = "INSERT INTO pedido (sucursal, total, cliente_nombre, cliente_telefono, cliente_direccion, cliente_email, envio, pedido, cantidad_menus, hora) VALUES ($sucursal, $precio, '$cliente_nombre', '$cliente_telefono', '$cliente_direccion', '$cliente_email', $envio, '$pedido', $cantidadMenuTotal, '$hora')";
-                    if ($conn->query($sql) === TRUE) {
+                    if (connectarDB($sql) === TRUE) {
                         $exito = 1;
                     } else {
-                        echo "Error: " . $sql . "<br>" . $conn->error;
+                        echo "Error: Ha ocurrido un error interno del servidor. Vuelva a intentarlo o espere e inténtelo mas tarde.";
                     }
                 }
                 else{
@@ -69,7 +66,6 @@ error_reporting(E_ALL);
         else{
             echo "<script>alert('Error: Stock insuficiente.');</script>";
         }
-        $conn->close();
     }
 ?>
 
@@ -157,13 +153,8 @@ error_reporting(E_ALL);
                 <div class="input-field col s12">
                   <select id="sucursal" name="sucursal" onchange="getHorarios()">
            <?php
-                $servername = "localhost";
-                $username = "root";
-                $password = "Uur5ryw5.17";
-                $dbname = "viandaexpress";
-                $conn = new mysqli($servername, $username, $password, $dbname);
                 $sql = "SELECT * FROM `sucursales` WHERE 1";
-                $result = $conn->query($sql);
+                $result = connectarDB($sql);
                 while($row = $result->fetch_assoc()) {
                     echo "<option value='" . $row['id'] . "'>" . $row['direccion'] . "</option>";
                 }
@@ -180,14 +171,8 @@ error_reporting(E_ALL);
           </div>
            
         <?php
-        $servername = "localhost";
-        $username = "root";
-        $password = "Uur5ryw5.17";
-        $dbname = "viandaexpress";
-        $conn = new mysqli($servername, $username, $password, $dbname);
-        $conn->set_charset("utf8");
         $sql = "SELECT * FROM menu where DATE(`fecha`)=CURDATE()";
-        $result = $conn->query($sql);
+        $result = connectarDB($sql);
 
         if ($result->num_rows > 0) {
             $i = 1;
@@ -219,17 +204,6 @@ error_reporting(E_ALL);
             else {
                 echo "No hay Resultados de menús para el día de hoy.";
         }
-        $conn->close();
-//           <div class="row">
-//            Menú 1: Milanesa $50
-//            <div class="input-field col s12">
-//              <select id="menu1" name="menu1" onchange="cargarPedido()" data-menu="Milanesa" data-precio="50.00">
-//                <option value="0" selected>0</option>
-//                <option value="1">1</option>
-//                <option value="2">2</option>
-//              </select>
-//            </div>
-//          </div>
         ?> 
            
         <h5 class="center-align teal-text" style="color:#DB4437!important;">Confirme su Pedido</h5>
@@ -265,18 +239,11 @@ error_reporting(E_ALL);
             <?php
             echo "var pedido = '';";
             echo $scriptPedido;
-            //pedido += "- ";
-            //pedido += document.getElementById('menu1').value + " ";
-            //pedido += $("#menu1").attr("data-menu") + ": $";
-            //pedido += (parseFloat($("#menu1").attr("data-precio")) * parseFloat(document.getElementById('menu1').value));
-            //pedido += "\n";
             
             echo "document.getElementById('pedidoStr').value = pedido;";
             
             echo "var precioTotal = 0.00;";
             echo $scriptPrecio;
-            
-            //precioTotal += (parseFloat($("#menu1").attr("data-precio")) * parseFloat(document.getElementById('menu1').value));
             
             echo "document.getElementById('total').value = precioTotal;";
             ?>

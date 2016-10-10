@@ -1,14 +1,11 @@
 <?php
+    include 'seguridad.php';
+?>
+<?php
     // Estados de pedidos posibles:
     // 0 - Espera, 1 - Confirmado/en elaboración, 2 - Para ser entregado
     // 3 - Entregado, 4 - Cancelado
     if(!empty($_POST)){
-        $servername = "localhost";
-        $username = "root";
-        $password = "Uur5ryw5.17";
-        $dbname = "viandaexpress";
-        $conn = new mysqli($servername, $username, $password, $dbname);
-        $conn->set_charset("utf8");
         if(isset($_POST['preparacion'])){
             $estadoNuevo = 1;
         }
@@ -22,17 +19,17 @@
             $estadoNuevo = 4;
         }
         $sql = "UPDATE `pedido` SET `estado` = " . $estadoNuevo . " WHERE `id`= " . $_POST['pedido'];
-        $result = $conn->query($sql);
-        $conn->close();
+        $result = connectarDB($sql);
     }
 ?>
 <html>
     <head>
         <title>Pedidos</title>
         <meta charset="utf-8">
-        <meta http-equiv="refresh" content="10">
+        <meta http-equiv="refresh" content="30">
         <link rel="stylesheet" href="css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="css/datatables.min.css"/>
+        <link rel="stylesheet" href="css/font-awesome.min.css">
         <script src="js/jquery2.2.0.min.js"></script>
         <script src="js/bootstrap.min.js"></script>
 		<script type="text/javascript" src="js/datatables.min.js"></script>
@@ -68,6 +65,9 @@
 		</script>
     </head>
     <body>
+        <div class="col-lg-12" style="margin-bottom:20px;">
+            <a href="admin.php" class="btn btn-danger" style="height:35px;"><i class="fa fa-arrow-left"></i></a>
+        </div>
         <div class="container" style="margin-top:20px; width: 98%;">
             <table class="table table-striped" id="pedidos">
                 <thead>
@@ -85,18 +85,12 @@
                 </thead>
                 <tbody>
                     <?php
-                        $servername = "localhost";
-                        $username = "root";
-                        $password = "Uur5ryw5.17";
-                        $dbname = "viandaexpress";
-                        $conn = new mysqli($servername, $username, $password, $dbname);
-                        $conn->set_charset("utf8");
                         $sql = "SELECT `id`, `sucursal`, `total`, `cliente_nombre`, `cliente_telefono`, `cliente_direccion`, `cliente_email`, `envio`, `pedido`, `cantidad_menus`, `hora`, `estado`, TIME(`marca_temporal`) FROM `pedido` WHERE DATE(`marca_temporal`) = CURDATE() ORDER BY `marca_temporal` DESC ";
-                        $result = $conn->query($sql);
+                        $result = connectarDB($sql);
                         while($row = $result->fetch_assoc()) {
                             $envio = "No";
                             $sqlSucursal = "SELECT `direccion` FROM `sucursales` WHERE `id` = " . $row['sucursal'];
-                            $sucursal = $conn->query($sqlSucursal)->fetch_assoc()['direccion'];
+                            $sucursal = connectarDB($sqlSucursal)->fetch_assoc()['direccion'];
                             if($row['envio'] == 1){$envio = "Sí";}
                             echo "<tr>
                             <td>" . mb_strimwidth($row['TIME(`marca_temporal`)'], 0, 5) . "</td>

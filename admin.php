@@ -1,10 +1,11 @@
+<?php
+    include 'seguridad.php';
+?>
 <html>
     <head>
         <title>Pedidos</title>
         <meta charset="utf-8">
-        <meta http-equiv="refresh" content="60">
         <link rel="stylesheet" href="css/bootstrap.min.css">
-        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/r/bs-3.3.5/jq-2.1.4,dt-1.10.8/datatables.min.css"/>
         <script src="js/jquery2.2.0.min.js"></script>
         <script src="js/bootstrap.min.js"></script>
     </head>

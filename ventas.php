@@ -1,3 +1,6 @@
+<?php
+    include 'seguridad.php';
+?>
 <html>
     <head>
         <title>Ventas</title>
@@ -40,6 +43,9 @@
 		</script>
     </head>
     <body>
+        <div class="col-lg-12">
+            <a href="admin.php" class="btn btn-danger" style="height:35px;"><i class="fa fa-arrow-left"></i></a>
+        </div>
         <div class="container" style="margin-top:20px; width: 98%;">
             <div class="col-lg-12" style="margin-bottom:20px;">
                 <form method="post">

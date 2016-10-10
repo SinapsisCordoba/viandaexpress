@@ -1,4 +1,7 @@
 <?php
+    include 'seguridad.php';
+?>
+<?php
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
@@ -8,23 +11,17 @@ error_reporting(E_ALL);
     // 0 - Espera, 1 - Confirmado/en elaboración, 2 - Para ser entregado
     // 3 - Entregado, 4 - Cancelado
     if(!empty($_POST)){
-        $servername = "localhost";
-        $username = "root";
-        $password = "Uur5ryw5.17";
-        $dbname = "viandaexpress";
-        $conn = new mysqli($servername, $username, $password, $dbname);
-        $conn->set_charset("utf8");
         if(isset($_POST['menu-id'])){
             $sql = "SELECT * FROM `menu` WHERE `id`=" . $_POST['menu-id'];
-            $result = $conn->query($sql);
+            $result = connectarDB($sql);
             while($row = $result->fetch_assoc()) {
                 if((int)$_POST['cant-menus'] <= (int)$row['stock']){
                     $cantTotal = (int)$row['stock'] - (int)$_POST['cant-menus'];
                     $sql = "UPDATE `menu` SET `stock`=" . $cantTotal . " WHERE `id`=" . $_POST['menu-id'];
-                    $resultado = $conn->query($sql);
+                    $resultado = connectarDB($sql);
                     $total = (float)$_POST['cant-menus']*(float)$row['precio'];
                     $sql = "INSERT INTO `ventasAdicionales`(`total`, `cantMenus`) VALUES (\"" . $total . "\",\"" . $_POST['cant-menus'] . "\")";
-                    $resultado = $conn->query($sql);
+                    $resultado = connectarDB($sql);
                 }
                 else{echo "<script>alert(Error: Stock insuficiente para la venta);</script>";}
             }
@@ -43,16 +40,15 @@ error_reporting(E_ALL);
                 $estadoNuevo = 4;
             }
             $sql = "UPDATE `pedido` SET `estado` = " . $estadoNuevo . " WHERE `id`= " . $_POST['pedido'];
-            $result = $conn->query($sql);
+            $result = connectarDB($sql);
         }
-        $conn->close();
     }
 ?>
 <html>
     <head>
         <title>Pedidos</title>
         <meta charset="utf-8">
-<!--        <meta http-equiv="refresh" content="10">-->
+        <meta http-equiv="refresh" content="30">
         <link rel="stylesheet" href="css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="css/datatables.min.css"/>
         <link rel="stylesheet" href="css/font-awesome.min.css">
@@ -93,6 +89,7 @@ error_reporting(E_ALL);
     <body>
         <div class="col-lg-12">
             <div class="col-lg-6" style="margin-bottom:20px;">
+                <a href="admin.php" class="btn btn-danger" style="height:35px;"><i class="fa fa-arrow-left"></i></a>
                 <a href="javascript:void(0)" class="btn btn-primary" onclick="verForm()"><i class="fa fa-plus"></i> Nueva Venta Por Mostrador</a>
             </div>
             <div class="col-lg-6" id="venta-mostrador" style="display:none;">
@@ -101,13 +98,8 @@ error_reporting(E_ALL);
                         <label>Menú Vendido Por Mostrador:</label>
                         <select name="menu-id" class="form-control">
                             <?php
-                                $servername = "localhost";
-                                $username = "root";
-                                $password = "Uur5ryw5.17";
-                                $dbname = "viandaexpress";
-                                $conn = new mysqli($servername, $username, $password, $dbname);
                                 $sql = "SELECT * FROM `menu` WHERE DATE(`fecha`)=CURDATE()";
-                                $result = $conn->query($sql);
+                                $result = connectarDB($sql);
                                 if ($result->num_rows > 0) {
                                     while($row = $result->fetch_assoc()) {
                                         echo "<option value='" . $row['id'] . "'>" . $row['nombre'] . " (Stock: " . $row['stock'] . ")</option>";
@@ -141,14 +133,8 @@ error_reporting(E_ALL);
                 </thead>
                 <tbody>
                     <?php
-                        $servername = "localhost";
-                        $username = "root";
-                        $password = "Uur5ryw5.17";
-                        $dbname = "viandaexpress";
-                        $conn = new mysqli($servername, $username, $password, $dbname);
-                        $conn->set_charset("utf8");
                         $sql = "SELECT `id`, `total`, `cliente_nombre`, `cliente_telefono`, `cliente_direccion`, `cliente_email`, `envio`, `pedido`, `cantidad_menus`, `hora`, `estado`, TIME(`marca_temporal`) FROM `pedido` WHERE DATE(`marca_temporal`) = CURDATE() ORDER BY `marca_temporal` DESC ";
-                        $result = $conn->query($sql);
+                        $result = connectarDB($sql);
                         while($row = $result->fetch_assoc()) {
                             $envio = "No";
                             if($row['envio'] == 1){$envio = "Sí";}
