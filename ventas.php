@@ -15,27 +15,22 @@
         }
         return $aryRange;
     }
-    $sucursal;
+    $sucursal = '-';
     if(!empty($_POST)){
+        $sucursal = $_POST['sucursal'];
         $sql;
         if(isset($_POST['fechaI']) && isset($_POST['fechaF'])){
             $fechaInicio = strftime("%Y-%m-%d", strtotime(str_replace('/', '-', $_POST['fechaI'])));
             $fechaFinal = strftime("%Y-%m-%d", strtotime(str_replace('/', '-', $_POST['fechaF'])));
-            $sql = "SELECT * FROM `pedido` WHERE DATE(`marca_temporal`) BETWEEN '" . $fechaInicio . "' AND '" . $fechaFinal;
-            $sucursal = $_POST['sucursal'];
-            if(!$sucursal == '-'){
-                $sql .= "' AND `sucursal`=" . $sucursal;
-            }
             $fechas = createDateRangeArray($fechaInicio,$fechaFinal);
         }
     }
     else{
-        $sql = "SELECT * FROM `pedido` WHERE DATE(`marca_temporal`)=CURDATE()";
         $fechaInicio = date("Y-m-d");
         $fechaFinal = date("Y-m-d");
         $fechas = createDateRangeArray($fechaInicio,$fechaFinal);
     }
-    $result = connectarDB($sql);
+    $resultados = array();
     $fechaInicio = strftime("%d/%m/%Y", strtotime(str_replace('/', '-', $fechaInicio)));
     $fechaFinal = strftime("%d/%m/%Y", strtotime(str_replace('/', '-', $fechaFinal)));
 ?>
@@ -140,43 +135,57 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>05/10/2016</td>
-                        <td>5</td>
-                        <td>15</td>
-                        <td>$1500.00</td>
-                    </tr>
-                    <tr>
-                        <td>05/10/2016</td>
-                        <td>5</td>
-                        <td>15</td>
-                        <td>$1500.00</td>
-                    </tr>
-                    <tr>
-                        <td>05/10/2016</td>
-                        <td>5</td>
-                        <td>15</td>
-                        <td>$1500.00</td>
-                    </tr>
-                    <tr>
-                        <td>05/10/2016</td>
-                        <td>5</td>
-                        <td>15</td>
-                        <td>$1500.00</td>
-                    </tr>
-                    <tr>
-                        <td>05/10/2016</td>
-                        <td>5</td>
-                        <td>15</td>
-                        <td>$1500.00</td>
-                    </tr>
+                    <?php
+                    $totalCantPedidos = 0;
+                    $totalCantMenus = 0;
+                    $totalRecaudado = 0.0;
+                    foreach($fechas as $fecha){
+                        $sql = "SELECT COUNT(*) AS cuenta, SUM(total) AS total, SUM(cantidad_menus) AS cantidad_menus FROM `pedido` WHERE DATE(`marca_temporal`)= '" . $fecha . "'";
+                        if(!$sucursal == '-'){
+                            $sql .= "' AND `sucursal`=" . $sucursal;
+                        }
+                        $resultadosPedidos = connectarDB($sql)->fetch_assoc();
+                        $sql = "SELECT COUNT(*) AS cuenta, SUM(total) AS total, SUM(cantMenus) AS cantidad_menus FROM `ventasAdicionales` WHERE DATE(`fecha`)= '" . $fecha . "'";
+                        if(!$sucursal == '-'){
+                            $sql .= "' AND `sucursal`=" . $sucursal;
+                        }
+                        $resultadosVentasAd = connectarDB($sql)->fetch_assoc();
+                        $cuenta = (int)$resultadosPedidos['cuenta'] + (int)$resultadosVentasAd['cuenta'];
+                        $cantMenus = 0;
+                        $totalFecha = 0.0;
+                        if ($cuenta > 0) {
+                            if ($resultadosPedidos['cuenta'] > 0) {
+                                $totalFecha += (float)$resultadosPedidos['total'];
+                                $cantMenus += (int)$resultadosPedidos['cantidad_menus'];
+                                $totalCantPedidos += $cuenta;
+                                $totalCantMenus += (int)$resultadosPedidos['cantidad_menus'];
+                                $totalRecaudado += (float)$resultadosPedidos['total'];
+                            }
+                            if ($resultadosVentasAd['cuenta'] > 0) {
+                                $totalFecha += (float)$resultadosVentasAd['total'];
+                                $cantMenus += (int)$resultadosVentasAd['cantidad_menus'];
+                                $totalCantPedidos += $cuenta;
+                                $totalCantMenus += (int)$resultadosVentasAd['cantidad_menus'];
+                                $totalRecaudado += (float)$resultadosVentasAd['total'];
+                            }
+                            echo "<tr>
+                                <td>" . strftime("%d/%m/%Y", strtotime(str_replace('/', '-', $fecha))) . "</td>
+                                <td>$cuenta</td>
+                                <td>$cantMenus</td>
+                                <td>$$totalFecha</td>
+                            </tr>";
+                        }
+                    }
+                    ?>
                 </tbody>
                 <tfoot>
                     <tr>
-                        <td><b>Total</b></td>
-                        <td><b>25</b></td>
-                        <td><b>75</b></td>
-                        <td><b>$7500.00</b></td>
+                        <?php
+                        echo "<td><b>Total (". count($fechas) ." días)</b></td>
+                        <td><b>$totalCantPedidos</b></td>
+                        <td><b>$totalCantMenus</b></td>
+                        <td><b>$$totalRecaudado</b></td>";
+                        ?>
                     </tr>
                 </tfoot>
             </table>

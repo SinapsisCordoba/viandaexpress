@@ -20,7 +20,7 @@ error_reporting(E_ALL);
                     $sql = "UPDATE `menu` SET `stock`=" . $cantTotal . " WHERE `id`=" . $_POST['menu-id'];
                     $resultado = connectarDB($sql);
                     $total = (float)$_POST['cant-menus']*(float)$row['precio'];
-                    $sql = "INSERT INTO `ventasAdicionales`(`total`, `cantMenus`) VALUES (\"" . $total . "\",\"" . $_POST['cant-menus'] . "\")";
+                    $sql = "INSERT INTO `ventasAdicionales`(`total`, `cantMenus`, `sucursal`) VALUES (\"" . $total . "\",\"" . $_POST['cant-menus'] . "\", 1)";
                     $resultado = connectarDB($sql);
                 }
                 else{echo "<script>alert(Error: Stock insuficiente para la venta);</script>";}
@@ -133,7 +133,7 @@ error_reporting(E_ALL);
                 </thead>
                 <tbody>
                     <?php
-                        $sql = "SELECT `id`, `total`, `cliente_nombre`, `cliente_telefono`, `cliente_direccion`, `cliente_email`, `envio`, `pedido`, `cantidad_menus`, `hora`, `estado`, TIME(`marca_temporal`) FROM `pedido` WHERE DATE(`marca_temporal`) = CURDATE() ORDER BY `marca_temporal` DESC ";
+                        $sql = "SELECT `id`, `total`, `cliente_nombre`, `cliente_telefono`, `cliente_direccion`, `cliente_email`, `envio`, `pedido`, `cantidad_menus`, `hora`, `estado`, TIME(`marca_temporal`) FROM `pedido` WHERE DATE(`marca_temporal`) = CURDATE() AND `sucursal`=1 ORDER BY `marca_temporal` DESC";
                         $result = connectarDB($sql);
                         while($row = $result->fetch_assoc()) {
                             $envio = "No";
