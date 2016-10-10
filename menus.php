@@ -1,5 +1,9 @@
 <?php
     include 'seguridad.php';
+    session_start();
+    if(!$_SESSION['tipo_usuario']=="admin"){
+        header("Location: login.php");
+    }
 ?>
 <?php
     if(!empty($_POST)){

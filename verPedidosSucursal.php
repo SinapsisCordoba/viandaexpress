@@ -1,5 +1,9 @@
 <?php
     include 'seguridad.php';
+    session_start();
+    if(!$_SESSION['tipo_usuario']=="sucursal"){
+        header("Location: login.php");
+    }
 ?>
 <?php
 ini_set('display_errors', 1);
@@ -20,7 +24,7 @@ error_reporting(E_ALL);
                     $sql = "UPDATE `menu` SET `stock`=" . $cantTotal . " WHERE `id`=" . $_POST['menu-id'];
                     $resultado = connectarDB($sql);
                     $total = (float)$_POST['cant-menus']*(float)$row['precio'];
-                    $sql = "INSERT INTO `ventasAdicionales`(`total`, `cantMenus`, `sucursal`) VALUES (\"" . $total . "\",\"" . $_POST['cant-menus'] . "\", 1)";
+                    $sql = "INSERT INTO `ventasAdicionales`(`total`, `cantMenus`, `sucursal`) VALUES (\"" . $total . "\",\"" . $_POST['cant-menus'] . "\", " . $_SESSION['sucursal'] . ")";
                     $resultado = connectarDB($sql);
                 }
                 else{echo "<script>alert(Error: Stock insuficiente para la venta);</script>";}
@@ -89,7 +93,7 @@ error_reporting(E_ALL);
     <body>
         <div class="col-lg-12">
             <div class="col-lg-6" style="margin-bottom:20px;">
-                <a href="admin.php" class="btn btn-danger" style="height:35px;"><i class="fa fa-arrow-left"></i></a>
+                <a href="logout.php" class="btn btn-danger" style="height:35px;"><i class="fa fa-arrow-left"></i> Salir</a>
                 <a href="javascript:void(0)" class="btn btn-primary" onclick="verForm()"><i class="fa fa-plus"></i> Nueva Venta Por Mostrador</a>
             </div>
             <div class="col-lg-6" id="venta-mostrador" style="display:none;">
@@ -133,7 +137,7 @@ error_reporting(E_ALL);
                 </thead>
                 <tbody>
                     <?php
-                        $sql = "SELECT `id`, `total`, `cliente_nombre`, `cliente_telefono`, `cliente_direccion`, `cliente_email`, `envio`, `pedido`, `cantidad_menus`, `hora`, `estado`, TIME(`marca_temporal`) FROM `pedido` WHERE DATE(`marca_temporal`) = CURDATE() AND `sucursal`=1 ORDER BY `marca_temporal` DESC";
+                        $sql = "SELECT `id`, `total`, `cliente_nombre`, `cliente_telefono`, `cliente_direccion`, `cliente_email`, `envio`, `pedido`, `cantidad_menus`, `hora`, `estado`, TIME(`marca_temporal`) FROM `pedido` WHERE DATE(`marca_temporal`) = CURDATE() AND `sucursal`=" . $_SESSION['sucursal'] . " ORDER BY `marca_temporal` DESC";
                         $result = connectarDB($sql);
                         while($row = $result->fetch_assoc()) {
                             $envio = "No";
