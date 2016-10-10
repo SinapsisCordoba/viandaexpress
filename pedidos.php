@@ -158,7 +158,7 @@ error_reporting(E_ALL);
                 while($row = $result->fetch_assoc()) {
                     echo "<option value='" . $row['id'] . "'>" . $row['direccion'] . "</option>";
                 }
-           ?>   
+           ?>
                   </select>
                 </div>
           </div>

@@ -6,7 +6,6 @@
         $sql;
         if(isset($_POST['id-menu'])){
             $fecha = strftime("%Y-%m-%d", strtotime(str_replace('/', '-', $_POST['fecha'])));
-            echo $fecha;
             $precio = str_replace(',', '.', $_POST['precio']);
             if($_POST['id-menu'] == ""){
                 $sql = "INSERT INTO `menu`(`fecha`, `precio`, `nombre`, `stock`) VALUES (\"" . $fecha . "\"," . $precio . ",\"" . $_POST['nombre'] . "\"," . $_POST['stock'] . ")";

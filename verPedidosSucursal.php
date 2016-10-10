@@ -98,7 +98,7 @@ error_reporting(E_ALL);
                         <label>Menú Vendido Por Mostrador:</label>
                         <select name="menu-id" class="form-control">
                             <?php
-                                $sql = "SELECT * FROM `menu` WHERE DATE(`fecha`)=CURDATE()";
+                                $sql = "SELECT * FROM `menu` WHERE DATE(`fecha`)=CURDATE() AND `sucursal`=". 1;
                                 $result = connectarDB($sql);
                                 if ($result->num_rows > 0) {
                                     while($row = $result->fetch_assoc()) {
