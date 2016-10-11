@@ -9,13 +9,13 @@ error_reporting(E_ALL);
 <?php
     $exito = 0;
     if(!empty($_POST)){
-        $sucursal = $_POST['sucursal'];
-        $cliente_nombre = $_POST['nombre'];
-        $cliente_telefono = $_POST['telefono'];
-        $cliente_direccion = $_POST['direccion'];
-        $cliente_email = $_POST['email'];
-        $pedido = $_POST['pedidoStr'];
-        $hora = $_POST['hora'];
+        $sucursal = seguridadSQL($_POST['sucursal']);
+        $cliente_nombre = seguridadSQL($_POST['nombre']);
+        $cliente_telefono = seguridadSQL($_POST['telefono']);
+        $cliente_direccion = seguridadSQL($_POST['direccion']);
+        $cliente_email = seguridadSQL($_POST['email']);
+        $pedido = seguridadSQL($_POST['pedidoStr']);
+        $hora = seguridadSQL($_POST['hora']);
         $envio = 0;
         if($_POST['envio']){
             $envio = 1;
@@ -30,7 +30,7 @@ error_reporting(E_ALL);
             $menuName = 'menu' . $k;
             if((int)$row['stock'] >= (int)$_POST[$menuName]){
                 $cantidadMenuTotal += $_POST[$menuName];
-                $precio += ($_POST[$menuName] * $row['precio']);
+                $precio += (seguridadSQL($_POST[$menuName]) * $row['precio']);
             }
             else{
                 $stockSuficiente = 1;
@@ -46,8 +46,8 @@ error_reporting(E_ALL);
                     $k = 1;
                     while($row = $result->fetch_assoc()) {
                         $menuName = 'menu' . $k;
-                        $nuevoStock = (int)$row['stock'] - (int)$_POST[$menuName];
-                        $sql = "UPDATE `menu` SET `stock` = " . $nuevoStock . " WHERE `id` = " . $_POST[$menuName];
+                        $nuevoStock = (int)$row['stock'] - (int)seguridadSQL($_POST[$menuName]);
+                        $sql = "UPDATE `menu` SET `stock` = " . $nuevoStock . " WHERE `id` = " . seguridadSQL($_POST[$menuName]);
                         $result = connectarDB($sql);
                         $k++;
                     }

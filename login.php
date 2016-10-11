@@ -3,8 +3,8 @@
 ?>
 <?php
     if(!empty($_POST)){
-        $nombre = $_POST['txtusuario'];
-        $pass = $_POST['txtpassword'];
+        $nombre = seguridadSQL($_POST['txtusuario']);
+        $pass = seguridadSQL($_POST['txtpassword']);
         if($nombre=="admin"){
             $sql = "SELECT COUNT(*) AS 'cuenta' FROM `admin` WHERE `usuario` = '" . $nombre  . "' AND `password` = MD5('" . $pass  . "')";
             $url = "admin.php";
