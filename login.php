@@ -1,5 +1,6 @@
 <?php
     include 'seguridad.php';
+    date_default_timezone_set('America/Argentina/Cordoba');
 ?>
 <?php
     if(!empty($_POST)){

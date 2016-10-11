@@ -4,6 +4,7 @@
     if(!$_SESSION['tipo_usuario']=="admin"){
         header("Location: login.php");
     }
+    date_default_timezone_set('America/Argentina/Cordoba');
 ?>
 <?php
     function createDateRangeArray($strDateFrom,$strDateTo){

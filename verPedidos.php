@@ -4,6 +4,7 @@
     if(!$_SESSION['tipo_usuario']=="admin"){
         header("Location: login.php");
     }
+    date_default_timezone_set('America/Argentina/Cordoba');
 ?>
 <?php
     // Estados de pedidos posibles:
@@ -12,9 +13,21 @@
     if(!empty($_POST)){
         if(isset($_POST['preparacion'])){
             $estadoNuevo = 1;
+            $sql = "SELECT `id`, `cliente_email` FROM `pedido` WHERE 1";
+            $datosUsuario = connectarDB($sql)->fetch_assoc();
+            $para = $datosUsuario['cliente_email'];
+            $asunto = "Pedido Confirmado";
+            $mensaje = "Su pedido nº " . $datosUsuario['id'] . " ha sido confirmado y está siendo preparado. Se le informará por este medio cuando este listo para ser retirado o enviado a domicilio. Desde ya muchas gracias.";
+            enviarEmail($para, $asunto, $mensaje);
         }
         if(isset($_POST['entregar'])){
             $estadoNuevo = 2;
+            $sql = "SELECT `id`, `cliente_email` FROM `pedido` WHERE 1";
+            $datosUsuario = connectarDB($sql)->fetch_assoc();
+            $para = $datosUsuario['cliente_email'];
+            $asunto = "Pedido Listo";
+            $mensaje = "Su pedido nº " . $datosUsuario['id'] . " ha sido preparado y está listo para ser entregado o enviado a domicilio. Desde ya muchas gracias.";
+            enviarEmail($para, $asunto, $mensaje);
         }
         if(isset($_POST['entregado'])){
             $estadoNuevo = 3;
@@ -89,7 +102,7 @@
                 </thead>
                 <tbody>
                     <?php
-                        $sql = "SELECT `id`, `sucursal`, `total`, `cliente_nombre`, `cliente_telefono`, `cliente_direccion`, `cliente_email`, `envio`, `pedido`, `cantidad_menus`, `hora`, `estado`, TIME(`marca_temporal`) FROM `pedido` WHERE DATE(`marca_temporal`) = CURDATE() ORDER BY `marca_temporal` DESC ";
+                        $sql = "SELECT `id`, `sucursal`, `total`, `cliente_nombre`, `cliente_telefono`, `cliente_direccion`, `cliente_email`, `envio`, `pedido`, `cantidad_menus`, `hora`, `estado`, TIME(`marca_temporal`) AS 'marca_temporal' FROM `pedido` WHERE DATE(`marca_temporal`) = CURDATE() ORDER BY `marca_temporal` DESC ";
                         $result = connectarDB($sql);
                         while($row = $result->fetch_assoc()) {
                             $envio = "No";
@@ -97,7 +110,7 @@
                             $sucursal = connectarDB($sqlSucursal)->fetch_assoc()['direccion'];
                             if($row['envio'] == 1){$envio = "Sí";}
                             echo "<tr>
-                            <td>" . mb_strimwidth($row['TIME(`marca_temporal`)'], 0, 5) . "</td>
+                            <td>" . mb_strimwidth(((int)mb_strimwidth($row['marca_temporal'], 0, 2)-3) . ":" .mb_strimwidth($row['marca_temporal'], 3, 5), 0, 5) . "</td>
                             <td>" . $row['id'] . "</td>
                             <td>" . $row['cliente_nombre'] . "<br />" . $row['cliente_direccion'] . "<br />" . $row['cliente_telefono'] . "</td>
                             <td>

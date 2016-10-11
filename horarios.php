@@ -1,5 +1,6 @@
 <?php
     include 'seguridad.php';
+    date_default_timezone_set('America/Argentina/Cordoba');
 ?>
 <?php
 $sql = "SELECT * FROM `horarios` WHERE `sucursal` = " . $_GET['suc'];
