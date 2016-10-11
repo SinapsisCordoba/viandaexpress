@@ -18,7 +18,7 @@ date_default_timezone_set('America/Buenos_Aires');
         $pedido = seguridadSQL($_POST['pedidoStr']);
         $hora = seguridadSQL($_POST['hora']);
         $envio = 0;
-        if($_POST['envio']){
+        if(isset($_POST['envio'])){
             $envio = 1;
         }
         $sql = "SELECT * FROM menu where DATE(`fecha`)=CURDATE()";
